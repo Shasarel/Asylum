@@ -119,7 +119,7 @@ def login_success(cookie):
             'message': 'Zalogowano!'
         }
     ), 200)
-    res.set_cookie(*cookie, secure=False, httponly=True, samesite='strict')
+    res.set_cookie(*cookie, secure=True, httponly=True, samesite='strict')
     return res
 
 
@@ -131,5 +131,5 @@ def auto_login(cookie):
 
 def logout():
     res = make_response(redirect(url_for('login'), code=302))
-    res.set_cookie('Authorization', '', expires=0, secure=False, httponly=True, samesite='strict')
+    res.set_cookie('Authorization', '', expires=0, secure=True, httponly=True, samesite='strict')
     return res
