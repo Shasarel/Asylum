@@ -13,7 +13,7 @@ def init_stream_routes(app):
     @app.route('/streams', methods=['GET'])
     @authorize('user', 'admin')
     def streams(context):
-        resp = requests.get('http://localhost:8002/streams').json()
+        resp = requests.get('http://gostream:8002/streams').json()
         
         strs = [x['id'] for x in resp]
 
@@ -28,7 +28,7 @@ def init_stream_routes(app):
     @app.route('/streams/<string:stream_id>', methods=['GET'])
     @authorize('user', 'admin')
     def stream(context, stream_id):
-        resp = requests.get('http://localhost:8002/streams').json()
+        resp = requests.get('http://gostream:8002/streams').json()
         url = ""
         for x in resp:
             if x['id'] == stream_id:
@@ -45,7 +45,7 @@ def init_stream_routes(app):
     @app.route('/recording/<string:recording_id>/<string:date>/<string:hour>', methods=['GET'])
     @authorize('user', 'admin')
     def recording(context, recording_id, date, hour):
-        resp = requests.get('http://localhost:8002/recordings/' + recording_id + '/' + date).json()
+        resp = requests.get('http://gostream:8002/recordings/' + recording_id + '/' + date).json()
         url = ""
         for x in resp:
             if x['hour'] == hour:
