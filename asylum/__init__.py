@@ -1,11 +1,9 @@
 import configparser
 import sqlite3
-
-CONFIG_LOCATION = "/home/thaid/Dev/repos/Asylum/config.ini"
+import os
 
 config = configparser.ConfigParser()
-config.read(CONFIG_LOCATION)
-
+config.read(os.environ['ASYLUM_WEB_CONFIG'])
 
 def create_sqlite3_connection():
     db_file = config['DATABASE']['Path']
