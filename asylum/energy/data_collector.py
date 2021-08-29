@@ -11,15 +11,17 @@ def main():
 
     if data is not None:
         try:
-            sql = "INSERT INTO energy (production, import, export, power_production, power_import, power_export) \
-                VALUES (?, ?, ?, ?, ?, ?)"
+            sql = "INSERT INTO energy (production, import, export, power_production, power_import, power_export, production_deye, power_production_deye) \
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
             cursor.execute(sql, (
-                data['total_energy_production'],
+                data['energy_flara'],
                 data['total_energy_import'],
                 data['total_energy_export'],
-                data['power_production'],
+                data['power_flara'],
                 data['power_import'],
-                data['power_export']
+                data['power_export'],
+                data['energy_deye'],
+                data['power_deye'],
             ))
             db_conn.commit()
         except Error as e:

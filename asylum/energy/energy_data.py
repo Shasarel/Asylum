@@ -10,8 +10,14 @@ def get_data():
         if not data['has_data']:
             return None
 
-        power_prod = data['energy_data']['flara_data']['power'] + data['energy_data']['deye_data']['power']
-        energy_prod = data['energy_data']['flara_data']['total_energy'] + data['energy_data']['deye_data']['total_energy']
+        power_prod_flara = data['energy_data']['flara_data']['power']
+        power_prod_deye = data['energy_data']['deye_data']['power']
+
+        prod_flara = data['energy_data']['flara_data']['total_energy']
+        prod_deye = data['energy_data']['deye_data']['total_energy']
+
+        power_prod = power_prod_flara + power_prod_deye
+        energy_prod = prod_flara + prod_deye
 
         power_import = data['energy_data']['power_import']
         power_export = data['energy_data']['power_export']
@@ -28,6 +34,10 @@ def get_data():
             'total_energy_production': energy_prod,
             'total_energy_import': energy_import,
             'total_energy_export': energy_export,
+            'power_flara': power_prod_flara,
+            'power_deye': power_prod_deye,
+            'energy_flara': prod_flara,
+            'energy_deye': prod_deye,
         }
     except (requests.exceptions.RequestException, ValueError) as e:
         return None
