@@ -1,5 +1,5 @@
 function updateCell(name, value){
-    let maxPower = 4000;
+    let maxPower = 8000;
     let peityValue = value;
     if(name === 'summary_power_store') {
         let storePeity = $('#summary_power_store_peity');
@@ -39,7 +39,7 @@ function update_data(){
             updateCell('summary_power_store', response.store);
         }
     });
-    setTimeout(update_data, 1000);
+    setTimeout(update_data, 2500);
 }
 
 function createPeity(){
