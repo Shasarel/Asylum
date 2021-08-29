@@ -11,7 +11,7 @@ def get_data():
             return None
 
         power_prod = data['energy_data']['flara_data']['power'] + data['energy_data']['deye_data']['power']
-        energy_prod = data['energy_data']['flara_data']['total_energy'] + data['energy_data']['deye_data']['total_energy'],
+        energy_prod = data['energy_data']['flara_data']['total_energy'] + data['energy_data']['deye_data']['total_energy']
 
         power_import = data['energy_data']['power_import']
         power_export = data['energy_data']['power_export']
