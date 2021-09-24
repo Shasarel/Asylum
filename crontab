@@ -1,0 +1,9 @@
+* * * * * root cd /app && python3 -m asylum.blinds.task_executor
+*/15 * * * * root cd /app && python3 -m asylum.blinds.task_scheduler
+
+* * * * * root cd /app && python3 -m asylum.energy.data_collector
+1 0 * * * root cd /app && python3 -m asylum.energy.data_packer
+
+* * * * * root cd /app && python3 -m asylum.meteo.data_collector
+1 0 * * * root cd /app && python3 -m asylum.meteo.data_packer
+

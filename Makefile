@@ -1,6 +1,7 @@
-APP_NAME := asylum_web
-VERSION := 1
+build: build-web build-cron
 
-build:
-	docker build --tag $(APP_NAME):$(VERSION) .
+build-web:
+	podman build --tag asylum_web -f web.dockerfile .
 
+build-cron:
+	podman build --tag asylum_cron -f cron.dockerfile .
