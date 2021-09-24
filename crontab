@@ -1,3 +1,5 @@
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
 * * * * * root cd /app && python3 -m asylum.blinds.task_executor
 */15 * * * * root cd /app && python3 -m asylum.blinds.task_scheduler
 
