@@ -252,9 +252,11 @@ def aggregate_energy_data(from_date, type):
         dummy_day_data = EnergyDaily()
         dummy_day_data.day_ordinal = raw_data[0].day_ordinal - 1
         dummy_day_data.production = 0
+        dummy_day_data.production_deye = 0
         dummy_day_data.import_ = 0
         dummy_day_data.export = 0
         dummy_day_data.production_offset = 0
+        dummy_day_data.production_deye_offset = 0
         dummy_day_data.import_offset = 0
         dummy_day_data.export_offset = 0
         dummy_day_data.max_power_production = 0
@@ -273,9 +275,11 @@ def aggregate_energy_data(from_date, type):
         current_day_data.id = 0
         current_day_data.day_ordinal = datetime.date.today().toordinal()
         current_day_data.production = current_day_last_entry[0].production - current_day_first_entry[0].production
+        current_day_data.production_deye = current_day_last_entry[0].production_deye - current_day_first_entry[0].production_deye
         current_day_data.import_ = current_day_last_entry[0].import_ - current_day_first_entry[0].import_
         current_day_data.export = current_day_last_entry[0].export - current_day_first_entry[0].export
         current_day_data.production_offset = current_day_last_entry[0].production
+        current_day_data.production_deye_offset = current_day_last_entry[0].production_deye
         current_day_data.import_offset = current_day_last_entry[0].import_
         current_day_data.export_offset = current_day_last_entry[0].export
         current_day_data.max_power_production = 0
@@ -291,7 +295,7 @@ def aggregate_energy_data(from_date, type):
 
     # Calculate total energy
     energy_total = {}
-    energy_total['production'] = round((raw_data[-1].production_offset - raw_data[0].production_offset) / 1000, 2)
+    energy_total['production'] = round((raw_data[-1].production_offset - raw_data[0].production_offset + raw_data[-1].production_deye_offset - raw_data[0].production_deye_offset) / 1000, 2)
     energy_total['import'] = round((raw_data[-1].import_offset - raw_data[0].import_offset) / 1000, 2)
     energy_total['export'] = round((raw_data[-1].export_offset - raw_data[0].export_offset) / 1000, 2)
     energy_total['use'] = round(energy_total['production'] - energy_total['export'], 2)
@@ -348,11 +352,11 @@ def aggregate_energy_data(from_date, type):
                 idx = (current_day_date.year - from_date.year) * 12 + current_day_date.month - 1
 
             if type == 'month':
-                aggregated_production[idx] = round(x.production / 1000, 2)
+                aggregated_production[idx] = round((x.production + x.production_deye) / 1000, 2)
                 aggregated_import[idx] = round(x.import_ / 1000, 2)
                 aggregated_export[idx] = round(x.export / 1000, 2)
             else:
-                aggregated_production[idx] = round((x.production_offset - previous_data.production_offset) / 1000, 2)
+                aggregated_production[idx] = round((x.production_offset - previous_data.production_offset + x.production_deye_offset - previous_data.production_deye_offset) / 1000, 2)
                 aggregated_import[idx] = round((x.import_offset - previous_data.import_offset) / 1000, 2)
                 aggregated_export[idx] = round((x.export_offset - previous_data.export_offset) / 1000, 2)
 
@@ -369,7 +373,7 @@ def aggregate_energy_data(from_date, type):
         max_use_power = max(max_use_power, (x.max_power_use, x.day_ordinal))
         max_store_power = max(max_store_power, (x.max_power_store, x.day_ordinal))
 
-        daily_production = round(x.production / 1000, 2)
+        daily_production = round((x.production + x.production_deye) / 1000, 2)
         daily_import = round(x.import_ / 1000, 2)
         daily_export = round(x.export / 1000, 2)
         daily_use = round(daily_production - daily_export, 2)
@@ -471,7 +475,7 @@ def aggregate_energy_daily_data(start_time):
     }
 
     if grouped_data['groups'] is not None:
-        energy_total['production'] = grouped_data['non_grouped'][-1].production - grouped_data['non_grouped'][0].production
+        energy_total['production'] = grouped_data['non_grouped'][-1].production - grouped_data['non_grouped'][0].production + grouped_data['non_grouped'][-1].production_deye - grouped_data['non_grouped'][0].production_deye
         energy_total['import'] = grouped_data['non_grouped'][-1].import_ - grouped_data['non_grouped'][0].import_
         energy_total['export'] = grouped_data['non_grouped'][-1].export - grouped_data['non_grouped'][0].export
         energy_total['use'] = energy_total['production'] - energy_total['export']
@@ -483,14 +487,14 @@ def aggregate_energy_daily_data(start_time):
         for x in grouped_data['groups'][0]:
             chart_power['export'].append(round_in(max_in(map(lambda x: x.power_export, x)), 0))
             chart_power['import'].append(round_in(max_in(map(lambda x: x.power_import, x)), 0))
-            chart_power['production'].append(round_in(max_in(map(lambda x: x.power_production, x)), 0))
-            chart_power['use'].append(max_in([0,round_in(max_in(map(lambda x: x.power_production - x.power_export, x)), 0)]))
+            chart_power['production'].append(round_in(max_in(map(lambda x: x.power_production + x.power_production_deye, x)), 0))
+            chart_power['use'].append(max_in([0,round_in(max_in(map(lambda x: x.power_production + x.power_production_deye - x.power_export, x)), 0)]))
             chart_power['store'].append(round_in(max_in(map(lambda x: (x.power_export * 0.8) - x.power_import, x)), 0))
-            chart_power['consumption'].append(round_in(max_in(map(lambda x: x.power_production - x.power_export + x.power_import, x)), 0))
+            chart_power['consumption'].append(round_in(max_in(map(lambda x: x.power_production + x.power_production_deye - x.power_export + x.power_import, x)), 0))
 
         for x in grouped_data['groups'][1]:
             if len(x) != 0:
-                energy_hours['production'].append(round((x[-1].production - x[0].production) / 1000, 2))
+                energy_hours['production'].append(round((x[-1].production - x[0].production + x[-1].production_deye - x[0].production_deye) / 1000, 2))
                 energy_hours['import'].append(round((x[-1].import_ - x[0].import_) / 1000, 2))
                 energy_hours['export'].append(round((x[-1].export - x[0].export) / 1000, 2))
                 energy_hours['use'].append(max(0, round(energy_hours['production'][-1] - energy_hours['export'][-1], 2)))

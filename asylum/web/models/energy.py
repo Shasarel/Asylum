@@ -16,6 +16,8 @@ class Energy(db.Model):
     power_production = db.Column(db.Integer, nullable=False)
     power_import = db.Column(db.Integer, nullable=False)
     power_export = db.Column(db.Integer, nullable=False)
+    production_deye = db.Column(db.Integer, nullable=False)
+    power_production_deye = db.Column(db.Integer, nullable=False)
 
     @staticmethod
     def get_last_rows(from_date, to_date, limit=None, desc=False):
@@ -47,6 +49,8 @@ class EnergyDaily(db.Model):
     max_power_consumption = db.Column(db.Integer, nullable=False)
     max_power_use = db.Column(db.Integer, nullable=False)
     max_power_store = db.Column(db.Integer, nullable=False)
+    production_deye = db.Column(db.Integer, nullable=False)
+    production_deye_offset = db.Column(db.Integer, nullable=False)
 
     @staticmethod
     def get_last_rows(from_date, to_date):
