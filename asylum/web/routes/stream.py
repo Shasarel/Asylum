@@ -35,7 +35,7 @@ def init_stream_routes(app):
                 url = x['url']
 
         data_model = {
-            'url': "https://asylum.zapto.org" + url
+            'url': "https://" + flask.request.host + url
         }
         page_model = PageModel('Kamery', context['user'])\
             .add_breadcrumb_page('Kamery', '/streams')\
@@ -52,7 +52,7 @@ def init_stream_routes(app):
                 url = x['url']
 
         data_model = {
-            'url': "https://asylum.zapto.org" + url
+            'url': "https://" + flask.request.host + url
         }
         page_model = PageModel('Nagrania', context['user'])\
             .add_breadcrumb_page('Nagrania', '/recording')\
